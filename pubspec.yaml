@@ -1,0 +1,15 @@
+name: dart_qv
+version: 0.0.1
+description: Interface for QlikSense Engine API
+author: Vadim Tsushko <vadimtsushko@gmail.com>
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  logging: any
+  quiver_log: any
+  browser: any
+  websockets: any
+dev_dependencies:
+  test: '>=0.12.0'
