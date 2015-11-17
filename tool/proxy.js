@@ -24,6 +24,9 @@ Connection.prototype.init = function () {
 
     };
 
+    connection.clientSocket.onopen = function () {
+        connection.serverSocket.send('{"id":-1, "message":"Connection opened"}');
+    };
 
     connection.serverSocket.on('message', function(message) {
         console.log('>> %s', message);

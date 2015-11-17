@@ -2,5 +2,10 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 /// The dart_qv library.
-library dart_qv;
+library engine;
+import 'dart:async';
+import 'package:websockets/websockets.dart';
+import 'dart:convert';
+import 'package:logging/logging.dart';
 
+part 'src/engine.dart';
