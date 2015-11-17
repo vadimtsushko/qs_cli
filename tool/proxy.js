@@ -1,36 +1,41 @@
-var ws = require("ws")
+var WebSocket = require('ws');
 
-// Scream server example: "hi" -> "HI!!!"
-// var server = ws.createServer(function (conn) {
-//     console.log("New connection")
-//     conn.on("text", function (str) {
-//         console.log("Received "+str)
-//         conn.sendText(str.toUpperCase()+"!!!")
-//     })
-//     conn.on("close", function (code, reason) {
-//         console.log("Connection closed")
-//     })
-// }).listen(8001)
 function Connection(serverWebSocket) {
-
   this.serverSocket = serverWebSocket;
   this.clientSocket = null;
+
 }
 
 Connection.prototype.init = function () {
     connection = this;
+    connection.clientSocket = new WebSocket('ws://localhost:4848/app/%3Ftransient%3D');
+
+    connection.clientSocket.onerror = function (ev) {
+        console.log('connection.clientSocket.onerror %s',ev);
+        connection.clientSocket = null;
+    };
+    connection.clientSocket.onclose = function () {
+        console.log('connection.clientSocket.onclose');
+        connection.clientSocket = null;
+    };
+    connection.clientSocket.onmessage = function (ev) {
+        connection.serverSocket.send(ev.data);
+        console.log('<< %s', ev.data);
+
+    };
+
+
     connection.serverSocket.on('message', function(message) {
-        console.log('received: %s', message);
-        connection.serverSocket.send(message.toUpperCase() + '!!!')
+        console.log('>> %s', message);
+        connection.clientSocket.send(message)
     });
-    connection.serverSocket.on('close',function (code, message) {
+    connection.serverSocket.on('close',function (code) {
         console.log('Closing connection with code: %s', code);
     });
-    connection.serverSocket.send('something');
-}
+};
 
-var qs;
-var WebSocketServer = require('ws').Server
+
+var WebSocketServer = WebSocket.Server
   , wss = new WebSocketServer({port: 8001});
 wss.on('connection', function(ws) {
   var conn = new Connection(ws);
