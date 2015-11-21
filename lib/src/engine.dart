@@ -5,21 +5,30 @@ class Engine {
   int seqId = 0;
   WebSocket ws;
   bool closed = false;
-  final Map<int, Completer<Map>> replyCompleters = new  Map<int, Completer<Map>>();
+  final Map<int, Completer> replyCompleters = new  Map<int, Completer>();
   Engine();
-  init() async {
+  Future<Global> init() async {
     ws = await WebSocket.connect("ws://localhost:8001/");
     ws.listen(onMessage);
-    var completer = new Completer();
+    var completer = new Completer<Global>();
     replyCompleters[-1] = completer;
     return completer.future;
   }
   onMessage(String message) {
     Map reply = JSON.decode(message);
-    assert(reply['id'] != null);
+//    assert(reply['id'] != null);
+    int id = reply['id'];
+    if (id == null) {
+      print('reply with null id: $reply');
+      return;
+    }
     var completer = replyCompleters.remove(reply['id']);
     assert(completer != null);
-    completer.complete(reply);
+    if (id == -1) {
+      completer.complete(new Global(this));
+    } else {
+      completer.complete(reply);
+    }
   }
 
   Future<Map> query(int handle, String method, args) async {

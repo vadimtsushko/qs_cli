@@ -8,7 +8,8 @@ function Connection(serverWebSocket) {
 
 Connection.prototype.init = function () {
     connection = this;
-    connection.clientSocket = new WebSocket('ws://localhost:4848/app/%3Ftransient%3D');
+    connection.clientSocket = new WebSocket('ws://localhost:4848/app/TestInterface');
+//    connection.clientSocket = new WebSocket('ws://192.168.188.10:4848/app/cb964130-12bb-476e-ac80-8b8ffa95f112/?qlikTicket=QDbtnc0jvR83lc1');
 
     connection.clientSocket.onerror = function (ev) {
         console.log('connection.clientSocket.onerror %s',ev);
