@@ -13,3 +13,5 @@ part 'src/engine.dart';
 part 'src/global.dart';
 part 'src/application.dart';
 part 'src/structs.dart';
+part 'src/handle_object.dart';
+part 'src/measure.dart';

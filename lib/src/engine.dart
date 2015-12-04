@@ -16,10 +16,8 @@ class Engine {
   }
   onMessage(String message) {
     Map reply = JSON.decode(message);
-//    assert(reply['id'] != null);
     int id = reply['id'];
     if (id == null) {
-      print('reply with null id: $reply');
       return;
     }
     var completer = replyCompleters.remove(reply['id']);
