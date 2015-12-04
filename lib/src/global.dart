@@ -1,14 +1,37 @@
 part of engine;
 
-class Global {
-  Engine engine;
-  final handle = -1;
-  Global(this.engine);
+class Global extends HandleObject {
+  Global(Engine engine) : super(engine, -1);
   Future<Application> openDoc(String appName) async {
     var reply = await engine.query(-1, 'OpenDoc', [appName]);
-    int handle = reply['result']['qReturn']['qHandle'];
-    assert(handle != null);
-    var result = new Application(engine,handle, appName);
-    return result;
+    int docHandle = _getDocHandle(reply);
+    if (docHandle == null) {
+      return null;
+    }
+    return new Application(engine, docHandle, appName);
   }
+  _getDocHandle(Map response) {
+    if (response['result'] == null) {
+      return null;
+    }
+    if (response['result']['qReturn'] == null) {
+      return null;
+    }
+    return response['result']['qReturn']['qHandle'];
+  }
+  Future<Application> getActiveDoc() async {
+    var reply = await query('GetActiveDoc', {});
+    print(reply);
+    int docHandle = _getDocHandle(reply);
+    if (docHandle == null) {
+      return null;
+    }
+    return new Application(engine, docHandle, '');
+  }
+
+  Future<Map> createApp(String appName, {String script: ''}) async =>
+      await query('CreateApp',
+          {"qAppName": appName + '.qvf', "qLocalizedScriptMainSection": script});
+  Future<Map> deleteApp(String appId) async =>
+      await query('DeleteApp', {"qAppId": appId + '.qvf'});
 }
