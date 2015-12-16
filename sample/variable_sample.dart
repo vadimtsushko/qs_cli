@@ -1,6 +1,6 @@
 import "package:dart_qv/engine.dart";
 
-final counter = 1500;
+final counter = 1250;
 main() async {
   final testAppName = 'VariablesSample$counter';
   var engine = new Engine();

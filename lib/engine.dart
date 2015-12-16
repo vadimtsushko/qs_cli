@@ -15,3 +15,6 @@ part 'src/application.dart';
 part 'src/structs.dart';
 part 'src/handle_object.dart';
 part 'src/measure.dart';
+part 'src/json_wrapper.dart';
+part 'src/variable.dart';
+
