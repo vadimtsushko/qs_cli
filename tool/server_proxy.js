@@ -100,16 +100,16 @@ function(err, res, body) {
     //  qsocks config, merges into standard https/http object headers.
     //  Set the session cookie correctly.
     //  The origin specified needs an entry in the Whitelist for the virtual proxy to allow websocket communication.
-    var config = {
-      host: '192.168.188.10',
-      isSecure: false,
-      origin: 'http://localhost',
-      rejectUnauthorized: false,
-      headers: {
-        "Content-Type": "application/json",
-        "Cookie": cookies[0]
-      }
-    }
+    //var config = {
+    //  host: '192.168.188.10',
+    //  isSecure: false,
+    //  origin: 'http://localhost',
+    //  rejectUnauthorized: false,
+    //  headers: {
+    //    "Content-Type": "application/json",
+    //    "Cookie": cookies[0]
+    //  }
+    //}
 
     var WebSocketServer = WebSocket.Server
         , wss = new WebSocketServer({port: 8001});

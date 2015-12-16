@@ -12,6 +12,7 @@ class Engine {
     ws.listen(onMessage);
     var completer = new Completer<Global>();
     replyCompleters[-1] = completer;
+    ws.add('{"createProxy":"vts"}');
     return completer.future;
   }
   onMessage(String message) {
