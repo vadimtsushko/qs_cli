@@ -7,12 +7,12 @@ class Engine {
   bool closed = false;
   final Map<int, Completer> replyCompleters = new  Map<int, Completer>();
   Engine();
-  Future<Global> init() async {
+  Future<Global> init(String userId) async {
     ws = await WebSocket.connect("ws://localhost:8001/");
     ws.listen(onMessage);
     var completer = new Completer<Global>();
     replyCompleters[-1] = completer;
-    ws.add('{"createProxy":"vts"}');
+    ws.add('{"createProxy":"$userId"}');
     return completer.future;
   }
   onMessage(String message) {
