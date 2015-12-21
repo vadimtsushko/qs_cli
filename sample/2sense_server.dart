@@ -3,7 +3,7 @@ library reader_tests;
 import "package:dart_qv/engine.dart";
 import 'package:inqlik_cli/src/qv_exp_reader.dart';
 
-const APP_ID = 'c16cc3aa-a04d-45e4-ac05-8d85996ea145';
+const APP_ID = '9199e7e7-d3e9-4b65-81de-0230b2dfb2ef';
 main() async {
   var reader = newReader()
     ..readFile(r'sample\exp_files\App.Variables.qlikview-vars');
@@ -55,6 +55,10 @@ main() async {
 
   var app = await global.openDoc(APP_ID);
 
+
+
+  print('******************** LOADING VARIABLES');
+
   var varsInApp = await app.getVariablesSet();
 
 
@@ -85,7 +89,7 @@ main() async {
   for (var exprData in expressionMap.values) {
     if(exprData.label != '') {
       var measureId = 'MEASURE_' + exprData.name;
-      measuresToImport[measureId] = new MeasureDef(measureId,exprData.definition,exprData.label, description: exprData.comment);
+      measuresToImport[measureId] = new MeasureDef(measureId,exprData.definition,exprData.label, description: exprData.comment, tags: [exprData.name, 'Imported']);
     }
   }
   print('Measures to load: ${measuresToImport.length}');

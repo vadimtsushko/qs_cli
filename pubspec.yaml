@@ -13,6 +13,6 @@ dependencies:
   websockets: any
   unscripted: any
   inqlik_cli:
-    git: https://github.com/inqlik/inqlik_cli
+    path: ../inqlik_cli
 dev_dependencies:
   test: '>=0.12.0'
