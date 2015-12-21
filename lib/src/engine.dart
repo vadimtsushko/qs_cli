@@ -8,11 +8,11 @@ class Engine {
   final Map<int, Completer> replyCompleters = new  Map<int, Completer>();
   Engine();
   Future<Global> init(String userId) async {
-    ws = await WebSocket.connect("ws://localhost:8001/");
+    ws = await WebSocket.connect("ws://localhost:8001/?userId=$userId");
     ws.listen(onMessage);
     var completer = new Completer<Global>();
     replyCompleters[-1] = completer;
-    ws.add('{"createProxy":"$userId"}');
+//    ws.add('{"createProxy":"$userId"}');
     return completer.future;
   }
   onMessage(String message) {
@@ -47,7 +47,6 @@ class Engine {
     if (!closed) {
       assert(queryMessage['id'] != null);
       replyCompleters[queryMessage['id']] = completer;
-      print(queryMessage);
       ws.add(JSON.encode(queryMessage));
     } else {
       completer.completeError(new Exception("Invalid state: Connection already closed."));
