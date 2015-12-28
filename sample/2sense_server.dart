@@ -3,7 +3,7 @@ library reader_tests;
 import "package:dart_qv/engine.dart";
 import 'package:inqlik_cli/src/qv_exp_reader.dart';
 
-const APP_ID = '5cad5d85-8fe0-4ae9-a8f1-f38cd2c66867';
+const APP_ID = '1a40f85c-9836-42d3-bf42-eee33b23eca4';
 const USER_ID = 'vts';
 //const APP_ID = '56c13c6f-b32b-4c8a-911b-c27cc622336d';
 //const USER_ID = 'osk';
@@ -11,11 +11,10 @@ const USER_ID = 'vts';
 main() async {
   var reader = newReader()
     ..readFile(r'sample\exp_files\App.Variables.qlikview-vars');
-//  reader.checkSyntax();
-//  if (reader.errors.isNotEmpty) {
-//    reader.printStatus();
-//    return;
-//  }
+  reader.checkSyntax();
+  if (reader.errors.isNotEmpty) {
+    reader.printStatus();
+  }
   final variableReferencePattern =
       new RegExp(r'\$\(([\wА-Яа-яA-Za-z._0-9]*)[)(]');
   var variablesToImportIds = new Set<String>();
@@ -48,8 +47,7 @@ main() async {
       print('Referenced variable definition not found: $varId');
       notFoundSet.add(varId);
     } else {
-      var vDef = new VariableDef(
-          varId, exprData.definition, exprData.comment);
+      var vDef = new VariableDef(varId, exprData.definition, exprData.comment);
       variablesToImport[varId] = vDef;
     }
   }
@@ -63,12 +61,17 @@ main() async {
 
   var app = await global.openDoc(APP_ID);
 
-
+//  var measures = await app.getMeasures();
+//  for (var each in measures) {
+//    print('${each.id} ${each.title}');
+//  }
+//  engine.close();
+//  return;
 
   print('******************** LOADING VARIABLES');
 
   var varsPresentInApp = await app.getVariables();
-  var varsInApp = varsPresentInApp.map((varDef)=>varDef.name).toSet();
+  var varsInApp = varsPresentInApp.map((varDef) => varDef.name).toSet();
 
   var varsToUpdate = variablesToImportIds.intersection(varsInApp);
   var varsToDelete = varsInApp.difference(variablesToImportIds);
@@ -78,15 +81,14 @@ main() async {
 //    if ()
 //  }
 
-
-  print('To update: ${varsToUpdate.length}, To delete: ${varsToDelete.length} To insert: ${varsToInsert.length}');
+  print(
+      'To update: ${varsToUpdate.length}, To delete: ${varsToDelete.length} To insert: ${varsToInsert.length}');
 
 //  print(varsToDelete);
 //  print(varsToInsert);
 //
 //  var debug = expressionMap['ПоказательСУчетомНедель'];
 //  return;
-
 
   for (var each in varsToInsert) {
     var vDef = variablesToImport[each];
@@ -99,31 +101,51 @@ main() async {
     await app.updateVariable(variablesToImport[each]);
   }
 
-  app.doSave();
-  app.saveObjects();
-
+//  app.doSave();
+  await app.saveObjects();
 
   print('******************** LOADING MEASURES');
+
   var measuresToImport = new Map<String, MeasureDef>();
 
+//  print(expressionMap.values);
   for (var exprData in expressionMap.values) {
-    if(exprData.label != '' ) {
+    if (exprData.label != '') {
       var measureId = 'MEASURE_' + exprData.name;
-      measuresToImport[measureId] = new MeasureDef(measureId,exprData.definition,exprData.label, description: exprData.comment, tags: [exprData.name, 'Imported']);
+      measuresToImport[measureId] = new MeasureDef(
+          measureId, exprData.definition, exprData.label,
+          description: exprData.comment, tags: [exprData.name, 'ImportedNew']);
     }
   }
-  print('Measures to load: ${measuresToImport.length}');
-  for (var mDef in measuresToImport.values) {
-    await app.createOrUpdateMeasure(mDef);
+  var measuresToImportIds = measuresToImport.keys.toSet();
+
+//  print(measuresToImportIds);
+
+  var measuresInApp = (await app.getMeasures()).toSet();
+//  print(measuresInApp);
+  var measuresToUpdate = measuresToImportIds.intersection(measuresInApp);
+  var measuresToDelete = measuresInApp.difference(measuresToImportIds);
+  var measuresToInsert = measuresToImportIds.difference(measuresToImportIds);
+
+  print(
+      'To update: ${measuresToUpdate.length}, To delete: ${measuresToDelete.length} To insert: ${measuresToInsert.length}');
+
+  for (var id in measuresToUpdate) {
+    var mDef = measuresToImport[id];
+    await app.updateMeasure(mDef);
   }
 
+  for (var id in measuresToInsert) {
+    var mDef = measuresToImport[id];
+    await app.createMeasure(mDef);
+  }
 
+  for (var id in measuresToDelete) {
+    await app.destroyMeasure(id);
+  }
 
+//  app.doSave();
+  await app.saveObjects();
 
-
-  engine.close();
-
-
-
-
+  await engine.close();
 }

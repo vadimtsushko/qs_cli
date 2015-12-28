@@ -54,8 +54,10 @@ class Engine {
     return completer.future;
   }
 
-  close() {
-    ws.close();
+  close() async{
+    await ws.close();
   }
-
-}
+  Future<Map> queryList(int handle, String method, args) async {
+    return await query(handle, method, [args]);
+  }
+  }
