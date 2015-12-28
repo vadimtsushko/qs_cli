@@ -62,9 +62,9 @@ class Application extends HandleObject {
     return reply;
   }
 
-  Future<Set<String>> getVariablesSet(
+  Future<List<VariableDef>> getVariables(
       {String filterTag: '', bool excludeScriptCreated: true}) async {
-    var result = new Set<String>();
+    var result = new List<VariableDef>();
     var varList = await this.query('CreateSessionObject', {
       "qProp": {
         "qInfo": {"qType": "VariableList"},
@@ -88,9 +88,52 @@ class Application extends HandleObject {
         .getValue('qItems');
     for (var each in varList2) {
       if (!excludeScriptCreated || each['qIsScriptCreated'] != true) {
-        result.add(jw(each).getValue('qName'));
+        String name = jw(each).getValue('qName');
+        String definition = jw(each).getValue('qDefinition');
+        String description = each['qDescription'];
+        result.add(new VariableDef(name,definition,description));
       }
+      return result;
     }
+
+    Future<List<MeasureDef>> getMeasures(
+        {String filterTag: '', bool excludeScriptCreated: true}) async {
+      var result = new List<MeasureDef>();
+      var varList = await this.query('CreateSessionObject', {
+        "qProp": {
+          "qInfo": {"qType": "MeasureList"},
+          "qVariableListDef": {
+            "qType": "measure",
+            "qShowReserved": true,
+            "qShowConfig": true,
+            "qData": {"title": "/title", "tags": "/tags"}
+          }
+        }
+      });
+      var varListHandle = new JsonWrapper(varList)
+          .get('result')
+          .get('qReturn')
+          .getValue('qHandle');
+      var varList1 = await this.engine.query(varListHandle, 'GetLayout', {});
+      var varList2 = jw(varList1)
+          .get('result')
+          .get('qLayout')
+          .get('qVariableList')
+          .getValue('qItems');
+      for (var each in varList2) {
+        if (!excludeScriptCreated || each['qIsScriptCreated'] != true) {
+          String name = jw(each).getValue('qName');
+          String definition = jw(each).getValue('qDefinition');
+          String description = each['qDescription'];
+          result.add(new MeasureDef(name, definition, description));
+        }
+      }
+      return result;
+    }
+
+
+
+
 //    var macro = [
 //      {
 //        "name": "VARIABLELIST",
