@@ -29,10 +29,12 @@ main() async {
       if (data.label != '' && data.comment != '') {
         measureCounter++;
       }
-      for (var m in variableReferencePattern
-          .allMatches(entry.expression.expandedDefinition)) {
-        variablesToImportIds.add(m.group(1));
-      }
+//      for (var m in variableReferencePattern
+//          .allMatches(entry.expression.expandedDefinition)) {
+//        variablesToImportIds.add(m.group(1));
+//      }
+      variablesToImportIds.add(entry.expression.name);
+
     }
   }
   print(
@@ -112,9 +114,10 @@ main() async {
   for (var exprData in expressionMap.values) {
     if (exprData.label != '') {
       var measureId = 'MEASURE_' + exprData.name;
+      var measureDefinition = '\$(${exprData.name})';
       measuresToImport[measureId] = new MeasureDef(
-          measureId, exprData.definition, exprData.label,
-          description: exprData.comment, tags: [exprData.name, 'ImportedNew']);
+          measureId, measureDefinition, exprData.label,
+          description: exprData.comment, tags: [exprData.name, 'Imported']);
     }
   }
   var measuresToImportIds = measuresToImport.keys.toSet();

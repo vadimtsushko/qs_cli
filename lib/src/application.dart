@@ -98,7 +98,7 @@ class Application extends HandleObject {
     for (var each in varList2) {
       if (!excludeScriptCreated || each['qIsScriptCreated'] != true) {
         String name = jw(each).getValue('qName');
-        String definition = jw(each).getValue('qDefinition');
+        String definition = each['qDefinition'];
         String description = each['qDescription'];
         result.add(new VariableDef(name, definition, description));
       }
