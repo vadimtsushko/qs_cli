@@ -9,7 +9,7 @@ main() async {
 };
 
 ws = await WebSocket.connect('ws://192.168.188.10:80/app/%3Ftransient%3D', headers: headers, compression: CompressionOptions.OFF);
-
+print(ws);
 }
 
 

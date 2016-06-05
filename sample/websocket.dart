@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 
-Socket socket;
+Socket sock;
 main() async {
 //  var data = [
 //    'GET /app/%3Ftransient%3D HTTP/1.1',
@@ -17,23 +17,23 @@ main() async {
 //    '',
 //    ''
 //  ];
-//
-//  socket = await Socket.connect('192.168.188.10', 80);
+////
+//  sock = await Socket.connect('192.168.188.10', 80);
 ////  socket = await Socket.connect('net.tutsplus.com', 80);
-//  socket.listen(onMessage);
+//  sock.listen(onMessage);
 //  var message = data.join('\r\n');
-//  socket.write(message);
+//  sock.write(message);
+//  return;
 
-
-//  var host = '192.168.188.10';
-////  var pfx = new File('sample/.pfx').readAsBytesSync();
-//  SecurityContext clientContext = new SecurityContext()
-//    ..setTrustedCertificates(file: 'sample/qs.pem');
-//  var client = new HttpClient();
-//  client.badCertificateCallback = (_,__,___)=>true;
-////  var request = await client.getUrl(
-////      Uri.parse("https://example.com/"));
-////  var response = await request.close();
+  var host = '192.168.188.10';
+//  var pfx = new File('sample/.pfx').readAsBytesSync();
+  SecurityContext clientContext = new SecurityContext()
+    ..usePrivateKey('sample/client_key.pem');
+  var client = new HttpClient();
+  client.badCertificateCallback = (_,__,___)=>true;
+//  var request = await client.getUrl(
+//      Uri.parse("https://example.com/"));
+//  var response = await request.close();
   var pfx = new File('sample/client.pfx').readAsBytesSync();
 
   var socket = await SecureSocket.connect('192.168.188.10',4243,onBadCertificate: (_) =>true);
@@ -52,11 +52,11 @@ main() async {
     'Content-Length: ${body.length}',
     '',
   ];
-
-  var message = data.join('\r\n');
-  socket.write(message);
-  print(message + '|');
-  socket.write(body);
+//
+//  var message = data.join('\r\n');
+//  socket.write(message);
+//  print(message + '|');
+//  socket.write(body);
 
 
 
@@ -78,5 +78,5 @@ main() async {
 onMessage(List event) {
   var message = UTF8.decode(event, allowMalformed: true);
   print(message);
-  socket.close();
+  sock.close();
 }

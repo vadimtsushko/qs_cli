@@ -3,7 +3,9 @@ part of engine;
 class Global extends HandleObject {
   Global(Engine engine) : super(engine, -1);
   Future<Application> openDoc(String appName) async {
+    print('here');
     var reply = await engine.query(-1, 'OpenDoc', [appName]);
+    print('here1 $reply');
     int docHandle = _getDocHandle(reply);
     if (docHandle == null) {
       return null;

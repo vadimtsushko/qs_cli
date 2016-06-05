@@ -38,7 +38,11 @@ class VariableDef {
   String comment;
   List<String> tags;
   VariableDef(this.name, this.definition, this.comment,
-  {this.id, this.tags: const []});
+  {this.id, this.tags: const []}) {
+    if (id == null) {
+      id = name;
+    }
+  }
 
   VariableDef.fromJson(Map from) {
     id = from['qProp']['qInfo']['qId'] ?? '';

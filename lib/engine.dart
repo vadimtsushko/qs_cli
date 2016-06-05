@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:websockets/websockets.dart';
 import 'dart:convert';
 import 'package:logging/logging.dart';
-import 'dart:async';
 
 part 'src/engine.dart';
 part 'src/global.dart';

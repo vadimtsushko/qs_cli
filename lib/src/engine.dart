@@ -1,11 +1,11 @@
 part of engine;
 
 class Engine {
-  final Logger logger= new Logger('Engine');
+  final Logger logger = new Logger('Engine');
   int seqId = 0;
   WebSocket ws;
   bool closed = false;
-  final Map<int, Completer> replyCompleters = new  Map<int, Completer>();
+  final Map<int, Completer> replyCompleters = new Map<int, Completer>();
   Engine();
   Future<Global> init(String userId) async {
     ws = await WebSocket.connect("ws://localhost:8001/?userId=$userId");
@@ -14,6 +14,20 @@ class Engine {
     replyCompleters[-1] = completer;
 //    ws.add('{"createProxy":"$userId"}');
     return completer.future;
+  }
+
+   initWithCookie(String url, String cookie) async {
+    var headers = {'Content-Type': 'application/json', 'Cookie': cookie};
+    ws = await WebSocket.connect(url, headers: headers);
+    print(ws);
+    ws.listen(onMessage, onError: onError);
+  //  var completer = new Completer<Global>();
+//    replyCompleters[-1] = completer;
+//    ws.add('{"createProxy":"$userId"}');
+//    return new Future.value(new Global(this));
+  }
+  onError(error) {
+    print(error);
   }
   onMessage(String message) {
     Map reply = JSON.decode(message);
@@ -42,6 +56,7 @@ class Engine {
     };
     return await rawQuery(request);
   }
+
   Future<Map> rawQuery(Map queryMessage) {
     Completer completer = new Completer();
     if (!closed) {
@@ -49,15 +64,17 @@ class Engine {
       replyCompleters[queryMessage['id']] = completer;
       ws.add(JSON.encode(queryMessage));
     } else {
-      completer.completeError(new Exception("Invalid state: Connection already closed."));
+      completer.completeError(
+          new Exception("Invalid state: Connection already closed."));
     }
     return completer.future;
   }
 
-  close() async{
+  close() async {
     await ws.close();
   }
+
   Future<Map> queryList(int handle, String method, args) async {
     return await query(handle, method, [args]);
   }
-  }
+}
