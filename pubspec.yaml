@@ -10,7 +10,6 @@ dependencies:
   logging: any
   quiver_log: any
   browser: any
-  websockets: any
   json_rpc_2: any
   web_socket_channel: any
   stream_channel: any

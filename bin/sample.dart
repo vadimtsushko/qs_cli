@@ -1,4 +1,4 @@
-import "package:websockets/websockets.dart";
+import 'dart:io';
 import "dart:async";
 //import 'dart:io';
 WebSocket ws;

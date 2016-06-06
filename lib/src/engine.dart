@@ -7,25 +7,20 @@ class Engine {
   bool closed = false;
   final Map<int, Completer> replyCompleters = new Map<int, Completer>();
   Engine();
-  Future<Global> init(String userId) async {
-    ws = await WebSocket.connect("ws://localhost:8001/?userId=$userId");
-    ws.listen(onMessage);
-    var completer = new Completer<Global>();
-    replyCompleters[-1] = completer;
-//    ws.add('{"createProxy":"$userId"}');
-    return completer.future;
+
+   init(String host, String userDir, String userId) async {
+     var ticketInfo = await Process.run('SenseTicket', [host,userDir,userId]);
+     ticketInfo = JSON.decode(ticketInfo.stdout);
+     var ticket = ticketInfo['Ticket'];
+     var response = await http.get('http://$host/hub/?qlikTicket=' + ticket);
+     var cookie = response.headers['set-cookie'];
+
+    var headers = {'Content-Type': 'application/json', 'Cookie': cookie};
+    ws = await WebSocket.connect('ws://$host/app/%3Ftransient%3D', headers: headers);
+    ws.listen(onMessage, onError: onError);
+    return new Global(this);
   }
 
-   initWithCookie(String url, String cookie) async {
-    var headers = {'Content-Type': 'application/json', 'Cookie': cookie};
-    ws = await WebSocket.connect(url, headers: headers);
-    print(ws);
-    ws.listen(onMessage, onError: onError);
-  //  var completer = new Completer<Global>();
-//    replyCompleters[-1] = completer;
-//    ws.add('{"createProxy":"$userId"}');
-//    return new Future.value(new Global(this));
-  }
   onError(error) {
     print(error);
   }
@@ -57,6 +52,8 @@ class Engine {
     return await rawQuery(request);
   }
 
+
+
   Future<Map> rawQuery(Map queryMessage) {
     Completer completer = new Completer();
     if (!closed) {
@@ -71,7 +68,7 @@ class Engine {
   }
 
   close() async {
-    await ws.close();
+    ws.close();
   }
 
   Future<Map> queryList(int handle, String method, args) async {
