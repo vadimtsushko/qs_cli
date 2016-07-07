@@ -8,7 +8,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:qe_model/convert.dart';
+import 'package:qe_model/models.dart';
 
 part 'src/engine.dart';
 part 'src/global.dart';

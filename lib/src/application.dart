@@ -1,11 +1,31 @@
 part of engine;
 
+
 class Application extends HandleObject {
   final String appName;
   Application(Engine engine, int handle, this.appName) : super(engine, handle);
   String toString() => 'Application($handle, $appName)';
-  Future<Map> createMeasure(MeasureDef measure) async {
+  Future<Map> createMeasureOld(MeasureDef measure) async {
     var reply = await engine.query(handle, 'CreateMeasure', measure.toJson());
+    return reply;
+  }
+  Future<Map> createMeasure(NxGenericMeasureProperties value) async {
+    var prop = {
+      'qProp': new NxGenericMeasurePropertiesEncoder().convert(value)
+    };
+    var reply = await engine.query(handle, 'CreateMeasure', prop);
+    print('createMeasure result: $reply');
+    return reply;
+  }
+
+  Future<Map> createDimension(NxGenericDimensionProperties value) async {
+    var prop = {
+      'qProp': new NxGenericDimensionPropertiesEncoder().convert(value)
+    };
+//    print('createDimension result: $prop');
+//    return prop;
+    var reply = await engine.query(handle, 'CreateDimension', prop);
+    print('createDimension result: $reply');
     return reply;
   }
 
@@ -109,6 +129,10 @@ class Application extends HandleObject {
   Future<Map> destroyMeasure(String id) async {
     return await query('DestroyMeasure', {'qId': id});
   }
+  Future<Map> destroyDimension(String id) async {
+    return await query('DestroyDimension', {'qId': id});
+  }
+
 
   Future<List<String>> getMeasures(
       {String filterTag: '', bool excludeScriptCreated: true}) async {
@@ -140,7 +164,7 @@ class Application extends HandleObject {
         .getValue('qItems');
     for (var each in varList2) {
 //      if (filter || each['qIsScriptCreated'] != true) {
-      String id = jw(each).get('qInfo').getValue('qId');
+      String id = jw(each).get('qInfo').getValue('qId').toString();
 //        String definition = jw(each).getValue('qDefinition');
 //        String description = each['qDescription'];
       result.add(id);
@@ -148,4 +172,44 @@ class Application extends HandleObject {
     }
     return result;
   }
+
+  Future<List<Map>> getDimensions(
+      {String filterTag: '', bool excludeScriptCreated: true}) async {
+    var result = new List<Map>();
+
+    var param = {
+      "qInfo": {"qType": "DimensionList"},
+      "qDimensionListDef": {
+        "qType": "dimension",
+        "qData": {
+          "title": "/title",
+//          "expressions": "/expressions",
+          "tags": "/tags"
+        }
+      }
+    };
+    var varList =
+    await this.engine.queryList(this.handle, 'CreateSessionObject', param);
+    var varListHandle = new JsonWrapper(varList)
+        .get('result')
+        .get('qReturn')
+        .getValue('qHandle');
+    var varList1 = await this.engine.query(varListHandle, 'GetLayout', {});
+
+    var list2 = jw(varList1)
+        .get('result')
+        .get('qLayout')
+        .get('qDimensionList')
+        .getValue('qItems');
+    for (var each in list2) {
+//      if (filter || each['qIsScriptCreated'] != true) {
+//      String id = jw(each).get('qInfo').getValue('qId');
+//        String definition = jw(each).getValue('qDefinition');
+//        String description = each['qDescription'];
+      result.add({'id': each['qInfo']['qId'], 'title': each['qMeta']['title']});
+//      }
+    }
+    return result;
+  }
+
 }
