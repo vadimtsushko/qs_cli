@@ -19,4 +19,5 @@ part 'src/handle_object.dart';
 part 'src/measure.dart';
 part 'src/json_wrapper.dart';
 part 'src/variable.dart';
+part 'src/generic_object.dart';
 

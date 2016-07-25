@@ -6,8 +6,8 @@ import 'package:csv/csv.dart';
 import 'package:matcher/matcher.dart';
 import 'dart:async';
 
-const APP_ID = 'd6a397f1-5bb1-4495-8edd-4205bd16dc81';
-const USER_ID = 'vts';
+const APP_ID = '571ee2e9-c871-4e27-8e30-6df20730d84b';
+const USER_ID = 'osk';
 const SERVER_ID = 'SERV10';
 
 main() async {
@@ -29,8 +29,9 @@ main() async {
 //          .readAsString());
   var engine = new Engine();
   var global = await engine.init(SERVER_ID, SERVER_ID, USER_ID);
+  print(global);
   var app = await global.openDoc(APP_ID);
-
+  print(app);
   var measures = await app.getMeasures();
   for (var each in measures) {
     print('Destroying measure $each');
@@ -39,16 +40,10 @@ main() async {
 
   for (var each in exprList.sublist(1)) {
     var exp = new QsMeasure.from(each);
-    if (exp.label.trim() != '') {
-      var measure = measureDef(exp);
-      await app.createMeasure(measure);
-      print(exp);
-    } else {
-      print('Skip creation of measure ${exp.id}');
-    }
+    var measure = measureDef(exp);
+    await app.createMeasure(measure);
+    print(exp);
   }
-
-
 
   await app.saveObjects();
 
@@ -63,8 +58,10 @@ NxGenericMeasureProperties measureDef(QsMeasure input) {
       ..qType = 'measure')
     ..qMeasure = (new NxLibraryMeasureDef()
       ..qDef = input.expression
-      ..qLabel = input.label)
-    ..qMetaDef = (new NxMeta()..title = input.id..description = input.comment);
+      ..qLabel = input.label ?? input.id)
+    ..qMetaDef = (new NxMeta()
+      ..title = input.id
+      ..description = input.comment);
 }
 
 Future<List<List>> getCsvData(List<String> testHeader, String fileName) async {

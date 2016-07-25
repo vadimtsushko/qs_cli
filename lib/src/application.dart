@@ -50,6 +50,14 @@ class Application extends HandleObject {
     }
     return new Measure(engine, mHandle);
   }
+  Future<GenericObject> getObject(String id) async {
+    var reply = await engine.query(handle, 'GetObject', {'qId': id});
+    int mHandle = reply['result']['qReturn']['qHandle'];
+    if (mHandle == null) {
+      return null;
+    }
+    return new GenericObject(engine, mHandle);
+  }
 
   Future<Map> destroyVariableByName(String name) async {
     return await query('DestroyVariableByName', {'qName': name});
@@ -69,16 +77,16 @@ class Application extends HandleObject {
     return await query('DoSave', {"qFileName": fileName});
   }
 
-  Future<Map> createOrUpdateMeasure(MeasureDef mDef) async {
-    var measure = await getMeasure(mDef.id);
-    Map reply;
-    if (measure == null) {
-      reply = await createMeasure(mDef);
-    } else {
-      reply = await measure.setProperties(mDef);
-    }
-    return reply;
-  }
+//  Future<Map> createOrUpdateMeasure(MeasureDef mDef) async {
+//    var measure = await getMeasure(mDef.id);
+//    Map reply;
+//    if (measure == null) {
+//      reply = await createMeasure(mDef);
+//    } else {
+//      reply = await measure.setProperties(mDef);
+//    }
+//    return reply;
+//  }
 
   Future<Map> updateMeasure(MeasureDef mDef) async {
     var measure = await getMeasure(mDef.id);
@@ -172,6 +180,43 @@ class Application extends HandleObject {
     }
     return result;
   }
+
+  Future<List<String>> getSheets(
+      ) async {
+    var result = new List<String>();
+
+    var param = {
+      "qInfo": {"qType": "SheetList"},
+      "qAppObjectListDef": {
+        "qType": "sheet",
+        "qData": {
+          "title": "/title"
+        }
+      }
+    };
+    var varList =
+    await this.engine.queryList(this.handle, 'CreateSessionObject', param);
+    var varListHandle = new JsonWrapper(varList)
+        .get('result')
+        .get('qReturn')
+        .getValue('qHandle');
+    var varList1 = await this.engine.query(varListHandle, 'GetLayout', {});
+    var varList2 = jw(varList1)
+        .get('result')
+        .get('qLayout')
+        .get('qAppObjectList')
+        .getValue('qItems');
+    for (var each in varList2) {
+//      if (filter || each['qIsScriptCreated'] != true) {
+      String id = jw(each).get('qInfo').getValue('qId').toString();
+//        String definition = jw(each).getValue('qDefinition');
+//        String description = each['qDescription'];
+      result.add(id);
+//      }
+    }
+    return result;
+  }
+
 
   Future<List<Map>> getDimensions(
       {String filterTag: '', bool excludeScriptCreated: true}) async {

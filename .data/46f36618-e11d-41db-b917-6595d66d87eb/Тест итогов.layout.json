@@ -1,0 +1,161 @@
+{
+    "qProperty": {
+        "qInfo": {
+            "qId": "epnzsG",
+            "qType": "sheet"
+        },
+        "qMetaDef": {
+            "title": "Тест итогов",
+            "description": ""
+        },
+        "rank": 10,
+        "thumbnail": {
+            "qStaticContentUrlDef": {}
+        },
+        "columns": 24,
+        "rows": 12,
+        "cells": [
+            {
+                "name": "XGaLxNA",
+                "type": "pivot-table",
+                "col": 0,
+                "row": 0,
+                "colspan": 12,
+                "rowspan": 12
+            }
+        ]
+    },
+    "qChildren": [
+        {
+            "qProperty": {
+                "qInfo": {
+                    "qId": "XGaLxNA",
+                    "qType": "pivot-table"
+                },
+                "qMetaDef": {},
+                "qHyperCubeDef": {
+                    "qDimensions": [
+                        {
+                            "qLibraryId": "Dimension_Группа",
+                            "qDef": {
+                                "qGrouping": "N",
+                                "qFieldDefs": [],
+                                "qFieldLabels": [],
+                                "qSortCriterias": [
+                                    {
+                                        "qSortByAscii": 1,
+                                        "qSortByLoadOrder": 1,
+                                        "qExpression": {}
+                                    }
+                                ],
+                                "qNumberPresentations": [],
+                                "qActiveField": 0,
+                                "autoSort": true,
+                                "cId": "jDRtwT",
+                                "othersLabel": "Другие"
+                            },
+                            "qOtherTotalSpec": {
+                                "qOtherMode": "OTHER_OFF",
+                                "qOtherCounted": {
+                                    "qv": "10"
+                                },
+                                "qOtherLimit": {
+                                    "qv": "0"
+                                },
+                                "qOtherLimitMode": "OTHER_GE_LIMIT",
+                                "qForceBadValueKeeping": true,
+                                "qApplyEvenWhenPossiblyWrongResult": true,
+                                "qOtherSortMode": "OTHER_SORT_DESCENDING",
+                                "qTotalMode": "TOTAL_OFF",
+                                "qReferencedExpression": {}
+                            },
+                            "qOtherLabel": {
+                                "qv": "Другие"
+                            },
+                            "qTotalLabel": {
+                                "qv": "Итоги"
+                            },
+                            "qCalcCond": {},
+                            "qAttributeExpressions": [],
+                            "qAttributeDimensions": []
+                        }
+                    ],
+                    "qMeasures": [
+                        {
+                            "qLibraryId": "Measure_СуммаПродажиТыс",
+                            "qDef": {
+                                "qTags": [],
+                                "qGrouping": "N",
+                                "qNumFormat": {
+                                    "qType": "U",
+                                    "qnDec": 10,
+                                    "qUseThou": 0
+                                },
+                                "qAccumulate": 0,
+                                "qActiveExpression": 0,
+                                "qExpressions": [],
+                                "autoSort": true,
+                                "cId": "hbKpdaf",
+                                "numFormatFromTemplate": true
+                            },
+                            "qSortBy": {
+                                "qSortByNumeric": -1,
+                                "qSortByLoadOrder": 1,
+                                "qExpression": {}
+                            },
+                            "qAttributeExpressions": [
+                                {},
+                                {}
+                            ],
+                            "qAttributeDimensions": [],
+                            "qCalcCond": {}
+                        }
+                    ],
+                    "qInterColumnSortOrder": [
+                        0
+                    ],
+                    "qSuppressMissing": true,
+                    "qInitialDataFetch": [
+                        {
+                            "qLeft": 0,
+                            "qTop": 0,
+                            "qWidth": 50,
+                            "qHeight": 50
+                        }
+                    ],
+                    "qReductionMode": "N",
+                    "qMode": "P",
+                    "qPseudoDimPos": -1,
+                    "qNoOfLeftDims": 1,
+                    "qMaxStackedCells": 5000,
+                    "qShowTotalsAbove": true,
+                    "qIndentMode": true,
+                    "qCalcCond": {},
+                    "customErrorMessage": {
+                        "calcCond": ""
+                    },
+                    "qLayoutExclude": {
+                        "qHyperCubeDef": {
+                            "qDimensions": [],
+                            "qMeasures": [],
+                            "qInterColumnSortOrder": [],
+                            "qInitialDataFetch": [],
+                            "qReductionMode": "N",
+                            "qMode": "S",
+                            "qPseudoDimPos": -1,
+                            "qNoOfLeftDims": -1,
+                            "qMaxStackedCells": 5000,
+                            "qCalcCond": {}
+                        }
+                    }
+                },
+                "showTitles": true,
+                "title": "",
+                "subtitle": "",
+                "footnote": "",
+                "visualization": "pivot-table"
+            },
+            "qChildren": []
+        }
+    ]
+}

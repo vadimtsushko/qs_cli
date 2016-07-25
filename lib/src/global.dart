@@ -35,4 +35,13 @@ class Global extends HandleObject {
           {"qAppName": appName + '.qvf', "qLocalizedScriptMainSection": script});
   Future<Map> deleteApp(String appId) async =>
       await query('DeleteApp', {"qAppId": appId + '.qvf'});
+
+  Future<List<DocListEntry>> getDocList() async {
+    var jsonReply = await query('GetDocList', {});
+    List<DocListEntry> result = <DocListEntry>[];
+    for (Map each in jsonReply['result']['qDocList']) {
+      result.add(new DocListEntryDecoder().convert(each));
+    }
+    return result;
+  }
 }
